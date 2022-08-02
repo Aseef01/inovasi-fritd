@@ -1,0 +1,174 @@
+<script src='<%= scriptUrl %>'></script>
+<script src='js/jquery-3.6.0.min.js'></script>
+<script>
+    // Display CCTV
+    loadPlayer({
+        url: 'ws://' + location.host + '/api/stream',
+        canvas: document.getElementById('canvas')
+    });
+
+    // Modal Box - Open Close
+    const modalBox = document.querySelector('.modal-box')
+
+    function closeOpenModalBox(...data) {
+        modalBox.classList.toggle('active')
+        // console.log(data[0])
+
+        const button_id = document.querySelector('input[name=button_id]')
+        button_id.setAttribute('value', data[0])
+        const header = document.querySelector('.modal-box h2').innerHTML = 'Setting ' + name
+    }
+
+    // Modal Box Set Jam
+    const jumlahPerHari = document.querySelector('.jumlah-per-hari')
+    const setJam = document.querySelector('.set-jam')
+
+    jumlahPerHari.addEventListener('change', function() {
+        setJam.innerHTML = ''
+
+        let count = jumlahPerHari.value
+
+        const label = document.createElement('label')
+        label.textContent = 'Set Jam:'
+        label.className = 'label-input'
+        setJam.appendChild(label)
+
+        for(let i = 1; i <= count; i++) {
+            const input = document.createElement('input')
+            input.setAttribute('type', 'time')
+            input.setAttribute('name', 'set-jam-' + i)
+            input.className = 'design-input'
+            input.style.marginBottom = '10px'
+            setJam.appendChild(input)
+        }
+    })
+
+    // Setup Apikey and Device ID
+    const apikey = '8116843801'
+    const device_id = '8116843801_device_1'
+
+    // AJAX - Post Data
+    const settingForm = document.querySelector('form')
+
+    settingForm.addEventListener('submit', function(e) {
+        e.preventDefault()
+
+        const data = new FormData()
+
+        const all = document.querySelectorAll('.input input')
+
+        for(let field of all) { // mirip seperti forEach()
+            // data.append(field.name, field.value)
+            if(field.name !== 'jumlah-per-hari') {
+                data.append(field.name, field.value)
+            }
+        }
+
+        all_data = {
+            // 'button_id': '1',
+            'timer': {},
+            'jam_berapa': {}
+        }
+
+        for(let [key, value] of data.entries()) {
+            if(key === 'button_id') {
+                all_data['button_id'] = value
+            } else if(key === 'time_out' || key === 'time_in') {
+                all_data['timer'][key] = value
+            } else {
+                all_data['jam_berapa'][key] = value
+            }
+        }
+        
+        $.ajax({
+            type: 'POST',
+            url: 'http://api.dmsolution2u.com/api/streams/edit?apikey=' + apikey,
+            data: all_data,
+            dataType: 'json',
+            success: function(response) {
+                console.log(response)
+            }
+        })
+
+        closeOpenModalBox()
+    })
+
+    // AJAX - Get Data and display sensor card based on amount of data
+    $.ajax({
+        type: 'GET',
+        // data: [],
+        url: 'http://api.dmsolution2u.com/api/devices?apikey=' + apikey + '&device=' + device_id,
+        dataType: 'json',
+        success: function(success) {
+            // console.log(success['result'])            
+            const sensor_input = document.querySelector('.sensor-input')
+
+            success['result'].forEach(data => {
+                let card = `<div class="${data.status === 1 ? 'card active' : 'card' }">
+                            <div class="icon">
+                                <i class="bi bi-archive main-icon"></i>
+                                <div class="information-input">
+                                    <div class="title">
+                                        <h3>${data.name}</h3>
+                                        <i class="bi bi-gear-fill setting" onclick="closeOpenModalBox(${data.id})"></i>
+                                    </div>
+                                    <span>${data.status === 1 ? 'Connected' : 'Not Connected' }</span>
+                                </div>
+                            </div>
+                            <div class="switch-button" data-id="${data.id}">
+                                <span>Off</span>
+                                <span>On</span>
+                            </div>
+                        </div>`
+
+                        
+                // setInterval(() => {        
+                    sensor_input.innerHTML += card
+                //     console.log('ok')
+                // }, 1000);
+
+                // Switch Button - Open Close
+                const switchButton = document.querySelectorAll('.switch-button')
+
+                switchButton.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        
+                        e.target.parentElement.classList.toggle('active')
+
+                        const span = document.querySelectorAll('.information-input span')
+                        const card = document.querySelectorAll('.card')
+
+                        for(let i = 0; i < span.length; i++) {
+                            if(card[i].classList.contains('active')) {
+                                span[i].innerHTML = 'Connected'
+                            } else {
+                                span[i].innerHTML = 'Not Connected'
+                            }
+                        }
+                        
+                        // span.forEach((span) => {
+                        //     // e.target.parentElement.classList.contains('active') ? span[i].innerHTML = 'Connected' : span[i].innerHTML = 'Not Connected';
+                        //     span.parentNode.classList.contains('active') ? span.innerHTML = 'Connected' : span.innerHTML = 'Not Connected';
+                        // })
+                        
+                        // javascript:location.reload(true)
+                        
+                        const button_id = button.getAttribute('data-id')
+
+                        $.ajax({
+                            url: 'http://api.dmsolution2u.com/api/streams/click?apikey=' + apikey,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { button_id },
+                            // success: function(success) {
+                            //     console.log(success)
+                            // }
+                        })
+                    })
+                })
+            })
+        }
+    })
+</script>
+</body>
+</html>

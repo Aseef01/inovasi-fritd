@@ -1,0 +1,78 @@
+<div class="main-content">
+    <header>
+        <h2>Good afternoon, Admin</h2>
+        <span>have a nice day</span>
+    </header>
+    <div class="content">
+        <div class="content-cctv">
+            <!-- <div class="input-cctv">
+                <div>
+                    <i class="bi bi-camera-video"></i>
+                    <span>Living Room Camera</span>
+                </div>
+                <div class="switch-button-cctv active">
+                    <span>On</span>
+                    <span>Off</span>
+                </div>
+            </div> -->
+            <div class="display-cctv">
+                <canvas id='canvas' class="canvas"></canvas>
+                <p>Disable</p>
+            </div>
+        </div>
+        <div class="sensor-input">
+            <!-- <div class="card active">
+                <div class="icon">
+                    <i class="bi bi-archive main-icon"></i>
+                    <div class="information-input">
+                        <div class="title">
+                            <h3>Tank 1</h3>
+                            <i class="bi bi-gear-fill setting" onclick="closeOpenModalBox(1)"></i>
+                        </div>
+                        <span>Connected</span>
+                    </div>
+                </div>
+                <div class="switch-button" data-id="1">
+                    <span>Off</span>
+                    <span>On</span>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal Box -->
+<div class="modal-box">
+    <div class="header">
+        <h2>Setting tank 2</h2>
+        <i class="bi bi-x close" onclick="closeOpenModalBox()"></i>
+    </div>
+    <form>
+        <div class="input">
+            <input type="hidden" value="0" name="button_id">
+            <label for="jumlah-per-hari" class="label-input">Jumlah Per Hari :</label>
+            <input class="design-input jumlah-per-hari" type="number" min="1" max="5" name="jumlah-per-hari">
+        </div>
+        <div class="input set-jam">
+        </div>
+
+        <div class="input">
+            <label for="time-valve-out" class="label-input">Time Valve Out :</label>
+            <div class="design-input">
+                <input type="number" id="time-valve-out" min="1" max="5" name="time_out">
+                <span>Minutes</span>
+            </div>
+        </div>
+        <div class="input">
+            <label for="time-valve-in" class="label-input">Time Valve In :</label>
+            <div class="design-input">
+                <input type="number" id="time-valve-in" min="1" max="5" name="time_in">
+                <span>Minutes</span>
+            </div>
+        </div>
+        <div class="buttons">
+            <button type="submit">Done</button>
+            <button class="cancel" type="button" onclick="closeOpenModalBox()">Cancel</button>
+        </div>
+    </form>
+</div>
