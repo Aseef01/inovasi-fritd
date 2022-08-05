@@ -9,6 +9,8 @@ a {
 body {
     background-color: #0A153E;
     font-family: arial;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 /* Default Variable */
@@ -335,4 +337,36 @@ body {
 }
 .modal-box .buttons button:hover {
     background-color: #1398E2;
+}
+
+/* Mobile Phone */
+@media only screen and (max-width: 600px) {
+    .sidebar {
+        display: none;
+    }
+    .sidebar.close ~ .main-content {
+        left: 0;
+        right: 0;
+    }
+    .main-content header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .main-content .content {
+        padding: 20px;
+    }
+    .main-content .content .content-cctv .display-cctv {
+        height: 200px;
+        margin-top: 0;
+    }
+    .main-content .content .content-cctv .display-cctv img {
+        width: 100%;
+    }
+    .content .sensor-input .card {
+        width: 100%;
+    }
+    .modal-box {
+        width: 80vw;
+    }
 }
